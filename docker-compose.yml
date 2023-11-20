@@ -9,6 +9,5 @@ services:
       - TOKEN=${TOKEN}
       - CHAT_ID=${CHAT_ID}
     volumes:
-      - "/codebase:/codebase"
-      - "/storage:/storage"
+      - ".:/codebase"
     restart: always
