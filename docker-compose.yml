@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  bot:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    environment:
+      - TOKEN=${TOKEN}
+      - CHAT_ID=${CHAT_ID}
+    volumes:
+      - "/codebase:/codebase"
+      - "/storage:/storage"
+    restart: always
