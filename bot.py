@@ -73,7 +73,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-async def notify_members(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     users = ""
     for member in new_members:
         delta = datetime.now() - new_members[member].join_date
