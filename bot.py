@@ -43,7 +43,7 @@ class Member(object):
         self.notified = False
 
     def __str__(self):
-        return f"{self.name} з ніком {self.username} приєднався {self.join_date.date()}"
+        return f"{self.name} з ніком {self.username} приєднався/лася {self.join_date.date()} "
 
 
 if not os.path.exists(DB_FILE):
@@ -86,6 +86,13 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     if not users:
         return
     await context.bot.send_message(chat_id=CHAT_ID, text=NOTIFICATION_MESSAGE.format(users), parse_mode=ParseMode.HTML)
+
+
+async def send_test_notification(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends test notification which should be sent daily"""
+    context.bot.send_message(chat_id=update.message.chat_id, text="Надсилаю тестове нагадування")
+
+    context.job_queue.run_once(notify_members, 2)
 
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
