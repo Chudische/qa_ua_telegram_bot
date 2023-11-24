@@ -77,10 +77,10 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     users = ""
     for member in new_members:
         delta = datetime.now() - new_members[member].join_date
-        if delta.days > 2 and not new_members[member].notified:
+        if delta.hour > 2 and not new_members[member].notified:
             users += f"@{new_members[member].username} "
             new_members[member].notified = True
-        elif delta.days > 3 and new_members[member].notified:
+        elif delta.hour > 3 and new_members[member].notified:
             kick_list[member] = new_members.pop(member)
     save_db()
     if not users:
@@ -90,9 +90,9 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def send_test_notification(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends test notification which should be sent daily"""
-    context.bot.send_message(chat_id=update.message.chat_id, text="Надсилаю тестове нагадування")
+    await context.bot.send_message(chat_id=update.message.chat_id, text="Надсилаю тестове нагадування")
 
-    context.job_queue.run_once(notify_members, 2)
+    await context.job_queue.run_once(notify_members, 2)
 
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
