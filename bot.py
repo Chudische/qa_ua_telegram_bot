@@ -287,7 +287,7 @@ def main() -> None:
     application.add_handler(CommandHandler("stop_tracking", stop_tracking_members))
 
     # Notify members
-    application.add_handler(CommandHandler("notify_members", notify_members))
+    application.add_handler(CommandHandler("send_test_notification", send_test_notification))
 
     # Handle members joining/leaving chats.
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
