@@ -76,7 +76,7 @@ logger = logging.getLogger(__name__)
 async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info("Start notifying members")
     users = ""
-    for member in new_members:
+    for member in list(new_members.keys()):
         delta = datetime.now() - new_members[member].join_date
         if delta.seconds // 3600 > 2 and not new_members[member].notified:
             users += f"@{new_members[member].username} "
@@ -178,7 +178,7 @@ async def show_kick_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     """Show members that don't want to follow the rules"""
     result = ""
     for member in kick_list:
-        result += f"{new_members[member]}"
+        result += f"{kick_list[member]}"
     if not kick_list:
         result = "Список штрафників наразі пустий..."
     await update.effective_message.reply_text(result, parse_mode=ParseMode.HTML)
