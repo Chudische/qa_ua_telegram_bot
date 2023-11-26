@@ -247,7 +247,11 @@ async def check_new_member_message(update: Update, context: ContextTypes.DEFAULT
     chat = update.effective_chat.id
     if chat == CHAT_ID and user_id in new_members:
         new_members.pop(user_id)
-        save_db()
+    elif chat == CHAT_ID and user_id in kick_list:
+        kick_list.pop(user_id)
+    else:
+        return
+    save_db()
 
 
 async def start_tracking_members(update: Update, context: ContextTypes.DEFAULT_TYPE):
