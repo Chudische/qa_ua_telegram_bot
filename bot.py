@@ -92,7 +92,7 @@ async def send_test_notification(update: Update, context: ContextTypes.DEFAULT_T
     """Sends test notification which should be sent daily"""
     await context.bot.send_message(chat_id=update.message.chat_id, text="Надсилаю тестове нагадування")
 
-    await context.job_queue.run_once(notify_members, 2)
+    context.job_queue.run_once(notify_members, 2)
 
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
