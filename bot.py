@@ -83,10 +83,9 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
             new_members[member].notified = True
         elif delta.seconds // 3600 > 3 and new_members[member].notified:
             kick_list[member] = new_members.pop(member)
+    save_db()
     if not users:
         return
-    else:
-        save_db()
     await context.bot.send_message(chat_id=CHAT_ID, text=NOTIFICATION_MESSAGE.format(users), parse_mode=ParseMode.HTML)
 
 
