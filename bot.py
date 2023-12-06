@@ -122,57 +122,6 @@ def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tup
     return was_member, is_member
 
 
-async def track_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Tracks the chats the bot is in."""
-    result = extract_status_change(update.my_chat_member)
-    if result is None:
-        return
-    was_member, is_member = result
-
-    # Let's check who is responsible for the change
-    cause_name = update.effective_user.full_name
-
-    # Handle chat types differently:
-    chat = update.effective_chat
-    if chat.type == Chat.PRIVATE:
-        if not was_member and is_member:
-            # This may not be really needed in practice because most clients will automatically
-            # send a /start command after the user unblocks the bot, and start_private_chat()
-            # will add the user to "user_ids".
-            # We're including this here for the sake of the example.
-            logger.info("%s unblocked the bot", cause_name)
-            context.bot_data.setdefault("user_ids", set()).add(chat.id)
-        elif was_member and not is_member:
-            logger.info("%s blocked the bot", cause_name)
-            context.bot_data.setdefault("user_ids", set()).discard(chat.id)
-    elif chat.type in [Chat.GROUP, Chat.SUPERGROUP]:
-        if not was_member and is_member:
-            logger.info("%s added the bot to the group %s", cause_name, chat.title)
-            context.bot_data.setdefault("group_ids", set()).add(chat.id)
-        elif was_member and not is_member:
-            logger.info("%s removed the bot from the group %s", cause_name, chat.title)
-            context.bot_data.setdefault("group_ids", set()).discard(chat.id)
-    elif not was_member and is_member:
-        logger.info("%s added the bot to the channel %s", cause_name, chat.title)
-        context.bot_data.setdefault("channel_ids", set()).add(chat.id)
-    elif was_member and not is_member:
-        logger.info("%s removed the bot from the channel %s", cause_name, chat.title)
-        context.bot_data.setdefault("channel_ids", set()).discard(chat.id)
-
-
-async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Shows which chats the bot is in"""
-    user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
-    group_ids = ", ".join(str(gid) for gid in context.bot_data.setdefault("group_ids", set()))
-    channel_ids = ", ".join(str(cid) for cid in context.bot_data.setdefault("channel_ids", set()))
-    text = (
-        f"@{context.bot.username} is currently in a conversation with the user IDs {user_ids}."
-        f" Moreover it is a member of the groups with IDs {group_ids} "
-        f"and administrator in the channels with IDs {channel_ids}."
-    )
-    await update.effective_message.reply_text(text)
-
-
 async def show_kick_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Show members that don't want to follow the rules"""
     result = ""
@@ -209,15 +158,6 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
         save_db()
         await update.effective_chat.send_message(
             WELCOME_MESSAGE.format(new_chat_member.username),
-            parse_mode=ParseMode.HTML,
-        )
-    elif was_member and not is_member:
-        if new_members.get(new_chat_member.id, None) is not None:
-            new_members.pop(new_chat_member.id)
-            save_db()
-        logger.info("%s removed from group", update.effective_user.username)
-        await update.effective_chat.send_message(
-            f"{new_chat_member.name} вийшов/вийшла із чату.",
             parse_mode=ParseMode.HTML,
         )
 
@@ -278,10 +218,6 @@ def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TOKEN).build()
-
-    # Keep track of which chats the bot is in
-    application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
-    application.add_handler(CommandHandler("show_chats", show_chats))
 
     # Show members from kick list or new members
     application.add_handler(CommandHandler("show_kick_list", show_kick_list))
