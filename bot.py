@@ -78,10 +78,10 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     users = ""
     for member in list(new_members.keys()):
         delta = datetime.now() - new_members[member].join_date
-        if delta.seconds // 3600 > 2 and not new_members[member].notified:
+        if delta.days >= 2 and not new_members[member].notified:
             users += f"@{new_members[member].username} "
             new_members[member].notified = True
-        elif delta.seconds // 3600 > 3 and new_members[member].notified:
+        elif delta.days >= 3 and new_members[member].notified:
             kick_list[member] = new_members.pop(member)
     save_db()
     if not users:
