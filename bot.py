@@ -142,6 +142,18 @@ async def show_new_members_list(update: Update, context: ContextTypes.DEFAULT_TY
     await update.effective_message.reply_text(result, parse_mode=ParseMode.HTML)
 
 
+async def clean_new_members_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Remove all from new members list"""
+    new_members.clear()
+    await update.effective_message.reply_text("Список нових членів группи очищено", parse_mode=ParseMode.HTML)
+
+
+async def clean_kick_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Remove all from new members list"""
+    kick_list.clear()
+    await update.effective_message.reply_text("Список штрафників очищено", parse_mode=ParseMode.HTML)
+
+
 async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Greets new users in chats and announces when someone leaves"""
     result = extract_status_change(update.chat_member)
@@ -222,6 +234,10 @@ def main() -> None:
     # Show members from kick list or new members
     application.add_handler(CommandHandler("show_kick_list", show_kick_list))
     application.add_handler(CommandHandler("show_new_members", show_new_members_list))
+
+    # Clean kick list or new members list
+    application.add_handler(CommandHandler("clean_new_members_list", clean_new_members_list))
+    application.add_handler(CommandHandler("clean_kick_list", clean_kick_list))
 
     # Start/Stop tracking of new members
     application.add_handler(CommandHandler("start_tracking", start_tracking_members))
