@@ -145,12 +145,14 @@ async def show_new_members_list(update: Update, context: ContextTypes.DEFAULT_TY
 async def clean_new_members_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Remove all from new members list"""
     new_members.clear()
+    save_db()
     await update.effective_message.reply_text("Список нових членів группи очищено", parse_mode=ParseMode.HTML)
 
 
 async def clean_kick_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Remove all from new members list"""
     kick_list.clear()
+    save_db()
     await update.effective_message.reply_text("Список штрафників очищено", parse_mode=ParseMode.HTML)
 
 
