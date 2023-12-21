@@ -204,7 +204,7 @@ async def check_new_member_message(update: Update, context: ContextTypes.DEFAULT
     elif chat == CHAT_ID and user_id in kick_list:
         kick_list.pop(user_id)
     else:
-        print(f"{chat} != {CHAT_ID} and {user_id} not in {new_members}")
+        print(f"{chat} != {CHAT_ID} and {user_id} not in {new_members.keys()}")
         return
     save_db()
 
