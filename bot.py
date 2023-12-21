@@ -79,7 +79,7 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     for member in list(new_members.keys()):
         delta = datetime.now() - new_members[member].join_date
         if delta.days >= 2 and not new_members[member].notified:
-            users += f"@{new_members[member].username} "
+            users += f"@{new_members[member].username if new_members[member].username is not None else new_members[member].name} "
             new_members[member].notified = True
         elif delta.days >= 3 and new_members[member].notified:
             kick_list[member] = new_members.pop(member)
@@ -168,10 +168,11 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if not was_member and is_member:
         new_members[new_chat_member.id] = Member(name=new_chat_member.full_name, username=new_chat_member.username)
+        user = new_chat_member.username if new_chat_member.username is not None else new_chat_member.full_name
         logger.info("%s added to group", update.effective_user.username)
         save_db()
         await update.effective_chat.send_message(
-            WELCOME_MESSAGE.format(new_chat_member.username),
+            WELCOME_MESSAGE.format(user),
             parse_mode=ParseMode.HTML,
         )
 
