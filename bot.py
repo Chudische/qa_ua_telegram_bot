@@ -168,11 +168,10 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if not was_member and is_member:
         new_members[new_chat_member.id] = Member(name=new_chat_member.full_name, username=new_chat_member.username)
-        user = f'<a href="tg://user?id={new_chat_member.id}">{new_chat_member.name}</a>'
         logger.info("%s added to group", update.effective_user.username)
         save_db()
         await update.effective_chat.send_message(
-            WELCOME_MESSAGE.format(user),
+            WELCOME_MESSAGE.format(new_chat_member.mention_html),
             parse_mode=ParseMode.HTML,
         )
 
