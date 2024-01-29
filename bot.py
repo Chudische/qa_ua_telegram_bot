@@ -79,7 +79,7 @@ async def notify_members(context: ContextTypes.DEFAULT_TYPE) -> None:
     for member in list(new_members.keys()):
         delta = datetime.now() - new_members[member].join_date
         if delta.days >= 2 and not new_members[member].notified:
-            users += f"@{new_members[member].username if new_members[member].username is not None else new_members[member].name} "
+            users += f'<a href="tg://user?id={new_members[member].id}">{new_members[member].name}</a>, '
             new_members[member].notified = True
         elif delta.days >= 3 and new_members[member].notified:
             kick_list[member] = new_members.pop(member)
