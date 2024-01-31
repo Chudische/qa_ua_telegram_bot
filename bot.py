@@ -171,7 +171,7 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
         logger.info("%s added to group", update.effective_user.username)
         save_db()
         await update.effective_chat.send_message(
-            WELCOME_MESSAGE.format(new_chat_member.mention_html),
+            WELCOME_MESSAGE.format(new_chat_member.mention_html()),
             parse_mode=ParseMode.HTML,
         )
 
